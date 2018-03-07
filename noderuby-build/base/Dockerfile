@@ -1,5 +1,5 @@
 FROM starefossen/ruby-node:2-8
-COPY bitbucket-publish.sh /usr/local/bin/hv-publish
+COPY hv-publish.sh /usr/local/bin/hv-publish
 COPY aws-deploy.sh /usr/local/bin/aws-deploy
 RUN \
 	chmod 775 /usr/local/bin/aws-deploy; \

@@ -120,7 +120,7 @@ curl -X POST --user "${BB_AUTH_STRING}" "https://api.bitbucket.org/2.0/repositor
 echo '{
 	"repo_slug": "'$BITBUCKET_REPO_SLUG'",
 	"commit_hash": "'$BITBUCKET_COMMIT'",
-	"commit_message": "'${COMMIT_SUBJECT/\"/\\\"}'",
+	"commit_message": "'${COMMIT_SUBJECT//\"/\\\"}'",
 	"commit_date": "'$COMMIT_DATE'",
 	"branch": "'$BITBUCKET_BRANCH'",
 	"build_number": "'$BITBUCKET_BUILD_NUMBER'"
@@ -128,6 +128,6 @@ echo '{
 
 aws-deploy --source $source_directory --name $DOMAIN
 
-node -p "JSON.stringify({url:'https://$DOMAIN.hvify.net', commit: '$BITBUCKET_COMMIT', branch: '$BITBUCKET_BRANCH', project: '$BITBUCKET_REPO_SLUG', message: '${COMMIT_SUBJECT/\'/\\\'}', comitted_at: '$COMMIT_DATE'})" > body.json
+node -p "JSON.stringify({url:'https://$DOMAIN.hvify.net', commit: '$BITBUCKET_COMMIT', branch: '$BITBUCKET_BRANCH', project: '$BITBUCKET_REPO_SLUG', message: '${COMMIT_SUBJECT//\'/\\\'}', comitted_at: '$COMMIT_DATE'})" > body.json
 curl -k -H "Content-Type: application/json" -H "x-apikey: $RESTDB_API_KEY" -X POST -d @body.json 'https://hvify-ed6c.restdb.io/rest/builds'
 

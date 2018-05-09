@@ -128,6 +128,6 @@ echo '{
 
 aws-deploy --source $source_directory --name $DOMAIN
 
-node -p "JSON.stringify({url:'https://$DOMAIN.hvify.net', commit: '$BITBUCKET_COMMIT', branch: '$BITBUCKET_BRANCH', project: '$BITBUCKET_REPO_SLUG', message: '${COMMIT_SUBJECT//\'/\\\'}', comitted_at: '$COMMIT_DATE'})" > body.json
+node -p "JSON.stringify({url:'http://$DOMAIN.hvify.net', commit: '$BITBUCKET_COMMIT', branch: '$BITBUCKET_BRANCH', project: '$BITBUCKET_REPO_SLUG', message: '${COMMIT_SUBJECT//\'/\\\'}', comitted_at: '$COMMIT_DATE'})" > body.json
 curl -k -H "Content-Type: application/json" -H "x-apikey: $RESTDB_API_KEY" -X POST -d @body.json 'https://hvify-ed6c.restdb.io/rest/builds'
 

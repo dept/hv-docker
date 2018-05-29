@@ -49,6 +49,7 @@ USAGE:
 
 source_directory=./build
 site_name=notset
+output=/tmp/url.txt
 
 while [ "$1" != "" ]; do
     case $1 in
@@ -60,6 +61,9 @@ while [ "$1" != "" ]; do
                                 ;;
         -h | --help )           usage
                                 exit
+                                ;;
+        -o | --output )         shift
+                                output=$1
                                 ;;
         * )                     usage
                                 exit 1
@@ -275,6 +279,8 @@ echo '{
 echo -e "🚦  ${CYAN}Routing ${YELLOW}$cloudfront_domain${CYAN} to ${YELLOW}$TMP_CLOUDFRONT_DNSNAME${RESTORE}"
 
 aws route53 change-resource-record-sets --hosted-zone-id $AWS_ROUTE_ZONE_ID --change-batch file:///tmp/routeconfig.json
+
+echo "http://$bucket_name" > $output
 
 
 echo -e "✅  ${GREEN}Successfully deployed! ${CYAN}Be aware that it takes approx. 10 min for Cloudfront to be ready.${RESTORE}"

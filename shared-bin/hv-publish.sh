@@ -91,6 +91,7 @@ words[Math.floor(Math.random() * words.length)];
 
 source_directory=./build
 site_name=$BITBUCKET_REPO_SLUG
+destination=netlify
 
 while [ "$1" != "" ]; do
     case $1 in
@@ -99,6 +100,9 @@ while [ "$1" != "" ]; do
                                 ;;
         -n | --name )           shift
                                 site_name=$1
+                                ;;
+        -d | --destination )    shift
+                                destination=$1
                                 ;;
         * )                     exit 1
     esac
@@ -126,8 +130,17 @@ echo '{
 	"build_number": "'$BITBUCKET_BUILD_NUMBER'"
 }' > $source_directory/.deploy.json
 
-aws-deploy --source $source_directory --name $DOMAIN
+output=/tmp/url.txt
 
-node -p "JSON.stringify({url:'http://$DOMAIN.hvify.net', commit: '$BITBUCKET_COMMIT', branch: '$BITBUCKET_BRANCH', project: '$BITBUCKET_REPO_SLUG', message: '${COMMIT_SUBJECT//\'/\\\'}', comitted_at: '$COMMIT_DATE'})" > body.json
+if [ $destination == "aws" ]
+then
+	aws-deploy --source $source_directory --name $DOMAIN --output $output
+else
+	netlify-deploy --source $source_directory --name $site_name --output $output --message "${COMMIT_SUBJECT//\"/\\\"}"
+fi
+
+deploy_url=`cat $output`
+
+node -p "JSON.stringify({url:'$deploy_url', commit: '$BITBUCKET_COMMIT', branch: '$BITBUCKET_BRANCH', project: '$BITBUCKET_REPO_SLUG', message: '${COMMIT_SUBJECT//\'/\\\'}', comitted_at: '$COMMIT_DATE'})" > body.json
 curl -k -H "Content-Type: application/json" -H "x-apikey: $RESTDB_API_KEY" -X POST -d @body.json 'https://hvify-ed6c.restdb.io/rest/builds'
 

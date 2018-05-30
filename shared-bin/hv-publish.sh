@@ -1,5 +1,17 @@
 #!/bin/bash
 
+##### CONSTANTS
+
+RESTORE='\033[0m'
+
+RED='\033[00;31m'
+GREEN='\033[00;32m'
+YELLOW='\033[00;33m'
+BLUE='\033[00;34m'
+PURPLE='\033[00;35m'
+CYAN='\033[00;36m'
+LIGHTGRAY='\033[00;37m'
+
 RANDOM_WORD=`node -p 'var words = [
 	"ace",
 	"admirable",
@@ -117,9 +129,15 @@ FILE=$BITBUCKET_BRANCH--`date +%Y-%m-%d`.zip
 DOMAIN=$site_name-$RANDOM_WORD-$BITBUCKET_BUILD_NUMBER
 
 
+
+echo -e "📦  ${CYAN}Zipping all build files to $FILE${RESTORE}"
+
 currentDirectory=$(pwd)
 cd $source_directory; zip -r ../$FILE .; cd $currentDirectory
-curl -X POST --user "${BB_AUTH_STRING}" "https://api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"$FILE"
+
+echo -e "📦  ${CYAN}Saving Zip to Bitbucket Downloads${RESTORE}"
+
+curl -s -X POST --user "${BB_AUTH_STRING}" "https://api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"$FILE"
 
 echo '{
 	"repo_slug": "'$BITBUCKET_REPO_SLUG'",
@@ -142,5 +160,5 @@ fi
 deploy_url=`cat $output`
 
 node -p "JSON.stringify({url:'$deploy_url', commit: '$BITBUCKET_COMMIT', branch: '$BITBUCKET_BRANCH', project: '$BITBUCKET_REPO_SLUG', message: '${COMMIT_SUBJECT//\'/\\\'}', comitted_at: '$COMMIT_DATE'})" > body.json
-curl -k -H "Content-Type: application/json" -H "x-apikey: $RESTDB_API_KEY" -X POST -d @body.json 'https://hvify-ed6c.restdb.io/rest/builds'
+curl -s -k -H "Content-Type: application/json" -H "x-apikey: $RESTDB_API_KEY" -X POST -d @body.json 'https://hvify-ed6c.restdb.io/rest/builds'
 

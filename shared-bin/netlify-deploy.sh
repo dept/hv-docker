@@ -86,19 +86,28 @@ fi
 ##### MAIN
 
 
+echo '
+/*
+  Cache-Control: public, max-age=31536000
+' > ./_headers
+
+
 ## Create Zip
 
-FILE=$site_name--`date +%Y-%m-%d`.zip # uses same naming like hv-publish to avoid double zipping
+FILE=${FILE:-$site_name--`date +%Y-%m-%d`.zip} # uses same naming like hv-publish to avoid double zipping
 if [ ! -f $FILE ]
 then
     echo -e "📦  ${CYAN}Zipping all build files to $FILE${RESTORE}"
     currentDirectory=$(pwd)
     cd $source_directory; zip -r ../$FILE .; cd $currentDirectory
+else
+    echo -e "📦  ${CYAN}Adding _header file (for Netlify) to $FILE${RESTORE}"
+    zip -u $FILE _headers
 fi
 
 
 
-echo -e "📦  ${CYAN}Deploying to ${YELLOW}Netlify${RESTORE}"
+echo -e "➡🚀  ${CYAN}Deploying to ${YELLOW}Netlify${RESTORE}"
 
 echo "Message:   $message"
 echo "Converted: ${message//\'/\\\'}"
@@ -108,12 +117,12 @@ message_url_encoded=$(node -p "encodeURIComponent('${message//\'/\\\'}')")
 
 ## Create Site
 
-curl -H "Authorization: Bearer $NETLIFY_ACCESS_TOKEN" -X POST -d "name=hv-$site_name&force_ssl=true" https://api.netlify.com/api/v1/sites
+curl -s -H "Authorization: Bearer $NETLIFY_ACCESS_TOKEN" -X POST -d "name=hv-$site_name&force_ssl=true" https://api.netlify.com/api/v1/sites
 
 
 ## Upload Zip, create deploy
 
-curl -H "Content-Type: application/zip" -H "Authorization: Bearer $NETLIFY_ACCESS_TOKEN" --data-binary "@$FILE" https://api.netlify.com/api/v1/sites/hv-$site_name.netlify.com/deploys?title=$message_url_encoded > /tmp/netlify_deploy.json
+curl -s -H "Content-Type: application/zip" -H "Authorization: Bearer $NETLIFY_ACCESS_TOKEN" --data-binary "@$FILE" https://api.netlify.com/api/v1/sites/hv-$site_name.netlify.com/deploys?title=$message_url_encoded > /tmp/netlify_deploy.json
 
 cat /tmp/netlify_deploy.json | jq -r '.deploy_ssl_url' > $output
 

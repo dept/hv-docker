@@ -89,31 +89,19 @@ fi
 echo '
 /*
   Cache-Control: public, max-age=31536000
-' > ./_headers
+' > ./build/_headers
 
 
 ## Create Zip
 
-FILE=${FILE:-$site_name--`date +%Y-%m-%d`.zip} # uses same naming like hv-publish to avoid double zipping
-if [ ! -f $FILE ]
-then
-    echo -e "📦  ${CYAN}Zipping all build files to $FILE${RESTORE}"
-    currentDirectory=$(pwd)
-    cd $source_directory; zip -r ../$FILE .; cd $currentDirectory
-else
-    echo -e "📦  ${CYAN}Adding _header file (for Netlify) to $FILE${RESTORE}"
-    zip -u $FILE _headers
-fi
+FILE=netlify.zip
+echo -e "📦  ${CYAN}Zipping all build files to $FILE${RESTORE}"
+currentDirectory=$(pwd)
+cd $source_directory; zip -rq ../$FILE .; cd $currentDirectory
 
 
 
-echo -e "➡🚀  ${CYAN}Deploying to ${YELLOW}Netlify${RESTORE}"
-
-echo "Message:   $message"
-echo "Converted: ${message//\'/\\\'}"
-echo "JS:        encodeURIComponent('${message//\'/\\\'}')"
-message_url_encoded=$(node -p "encodeURIComponent('${message//\'/\\\'}')")
-
+echo -e "🚀  ${CYAN}Deploying to ${YELLOW}Netlify${RESTORE}"
 
 ## Create Site
 
@@ -122,8 +110,16 @@ curl -s -H "Authorization: Bearer $NETLIFY_ACCESS_TOKEN" -X POST -d "name=hv-$si
 
 ## Upload Zip, create deploy
 
+# echo "Message:   $message"
+# echo "Converted: ${message//\'/\\\'}"
+# echo "JS:        encodeURIComponent('${message//\'/\\\'}')"
+message_url_encoded=$(node -p "encodeURIComponent('${message//\'/\\\'}')")
+
 curl -s -H "Content-Type: application/zip" -H "Authorization: Bearer $NETLIFY_ACCESS_TOKEN" --data-binary "@$FILE" https://api.netlify.com/api/v1/sites/hv-$site_name.netlify.com/deploys?title=$message_url_encoded > /tmp/netlify_deploy.json
 
 cat /tmp/netlify_deploy.json | jq -r '.deploy_ssl_url' > $output
+url=$(cat $output)
 
-echo -e "✅  ${GREEN}Successfully deployed!${RESTORE}"
+echo -e "\n\n"
+echo -e "✅  ${GREEN}Successfully deployed to $url${RESTORE}"
+echo -e "    Be aware that it might take a few minutes for the deployment to complete."

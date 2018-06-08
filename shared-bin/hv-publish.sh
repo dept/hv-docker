@@ -125,7 +125,7 @@ done
 
 COMMIT_SUBJECT=`git log -n 1 --pretty=format:%s $BITBUCKET_COMMIT`
 COMMIT_DATE=`git log -n 1 --pretty=format:%cI $BITBUCKET_COMMIT`
-FILE=$BITBUCKET_BRANCH--`date +%Y-%m-%d`.zip
+export FILE=$BITBUCKET_BRANCH--`date +%Y-%m-%d`.zip
 DOMAIN=$site_name-$RANDOM_WORD-$BITBUCKET_BUILD_NUMBER
 
 

@@ -60,6 +60,8 @@ source_directory=build
 
 source_directory=./build
 site_name=$BITBUCKET_REPO_SLUG
+git_email="hvdevice@gmail.com" # could be build@hinderlingvolkart.com too
+git_name="HV Build"
 
 while [ "$1" != "" ]; do
 	echo "Arg $1"
@@ -100,37 +102,34 @@ if [ -z ${repo_url+x} ]; then
     repo_url=https://$BB_AUTH_STRING@bitbucket.org/$repopath.git
 fi
 
-
+printTitle "Destination Repository: $repo_url"
 
 # Push to build repo
 dir=repo
 branch_name=$BITBUCKET_BRANCH
 
+git config --global user.email $git_email
+git config --global user.name $git_name
+git config http.postBuffer 157286400
+
 git log --pretty=format:"%s" > $source_directory/.gitlog
 
-if [ ! -e "$dir" ]; then
-	git clone $repo_url $dir
-fi
+printTitle "Checking if branch $branch_name already exists ..."
+
+mkdir $dir
 cd $dir
 
-
-# Checkout orphan branch
-if [ ! `git branch --list $branch_name` ]; then
-   printTitle "- Branch name $branch_name doesn't exist yet - creating."
-   git checkout --orphan $branch_name
-   git rm -rfq --ignore-unmatch .
+if [[ `git ls-remote $repo_url $branch_name` ]]; then
+    printTitle "- Branch $branch_name already exists, checking out."
+    git clone --branch $branch_name $repo_url .
 else
-	git checkout $branch_name
-	git pull origin $branch_name
+    printTitle "- Branch name $branch_name doesn't exist yet - will create."
+    git clone $repo_url .
+    git checkout --orphan $branch_name
+    git rm -rfq --ignore-unmatch .
 fi
 
-
-# git config user.name "HV Build"
-# git config user.email "hvdevice@gmail.com"
-# git config http.postBuffer 157286400
-
 rsync -ac ../$source_directory/ . --delete --exclude .gitignore --exclude .git
-
 
 git add -u
 git add -A .
@@ -144,9 +143,3 @@ else
     git push origin $branch_name
     printTitle "✅  Pushed changes to build repository: Build ${BITBUCKET_BUILD_NUMBER} -- $last_commit_messages"
 fi
-
-
-
-
-
-# curl -s -k -H "Content-Type: application/json" -H "x-apikey: $RESTDB_API_KEY" -X POST -d @body.json 'https://hvify-ed6c.restdb.io/rest/builds'

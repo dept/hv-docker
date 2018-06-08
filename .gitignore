@@ -1,4 +1,4 @@
 .DS_Store
 /shared-bin/env.sh
-/noderuby-build/base/*.sh
-/node-build/base/*.sh
+/noderuby-build/base/bin/*
+/node-build/base/bin/*

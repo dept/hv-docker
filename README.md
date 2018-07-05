@@ -14,9 +14,9 @@ Their main benefit is that they provide two very simple yet powerful commands:
 
 Arguments
 
-**-s or --source**      | Path to source directory (defaults to `./build`)
-**-n or --name**        | Name of website (defaults to Bitbucket repo slug)
-**-d or --destination** | `netlify` or `aws` (defaults to netlify)
+| **-s or --source**      | Path to source directory (defaults to `./build`)
+| **-n or --name**        | Name of website (defaults to Bitbucket repo slug)
+| **-d or --destination** | `netlify` or `aws` (defaults to netlify)
 
 ## save2repo
 
@@ -26,9 +26,9 @@ Its slug will be "{current repo slug}-build", its name will be "{current repo na
 
 Arguments
 
-**-s or --source**      | Path to source directory (defaults to `./build`)
-**-p or --path**        | The bitbucket repository path (will only be considered if destination is not set). Default: `{BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}-build`
-**-d or --destination** | The destination repository url with credentials. Default: Based on current bitbucket repository, see path parameter.
+| **-s or --source**      | Path to source directory (defaults to `./build`)
+| **-p or --path**        | The bitbucket repository path (will only be considered if destination is not set). Default: `{BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}-build`
+| **-d or --destination** | The destination repository url with credentials. Default: Based on current bitbucket repository, see path parameter.
 
 # Deployment
 

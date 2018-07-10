@@ -108,10 +108,6 @@ printTitle "Destination Repository: $repo_url"
 dir=repo
 branch_name=$BITBUCKET_BRANCH
 
-git config --global user.email $git_email
-git config --global user.name $git_name
-git config http.postBuffer 157286400
-
 git log --pretty=format:"%s" > $source_directory/.gitlog
 
 printTitle "Checking if branch $branch_name already exists ..."
@@ -128,6 +124,11 @@ else
     git checkout --orphan $branch_name
     git rm -rfq --ignore-unmatch .
 fi
+
+git config --global user.email $git_email
+git config --global user.name $git_name
+git config http.postBuffer 157286400
+
 
 rsync -ac ../$source_directory/ . --delete --exclude .gitignore --exclude .git
 

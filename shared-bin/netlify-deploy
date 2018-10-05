@@ -104,8 +104,10 @@ cd $source_directory; zip -rq ../$FILE .; cd $currentDirectory
 echo -e "🚀  ${CYAN}Deploying to ${YELLOW}Netlify${RESTORE}"
 
 ## Create Site
-
 curl -s -H "Authorization: Bearer $NETLIFY_ACCESS_TOKEN" -X POST -d "name=hv-$site_name&force_ssl=true" https://api.netlify.com/api/v1/sites
+
+## Assign to HV Team
+curl -s -H "Authorization: Bearer $NETLIFY_ACCESS_TOKEN" -X POST -d "account_id=5a573203a6188f7ad3e2362c" https://api.netlify.com/api/v1/sites/hv-$site_name.netlify.com/transfer
 
 
 ## Upload Zip, create deploy

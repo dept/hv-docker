@@ -51,7 +51,7 @@ echo '{
 	"commit_date": "'$COMMIT_DATE'",
 	"branch": "'$BITBUCKET_BRANCH'",
 	"build_number": "'$BITBUCKET_BUILD_NUMBER'"
-}' > $source_directory/.deploy.json
+}' > $source_directory/netlify-deploy.json
 
 output=/tmp/url.txt
 

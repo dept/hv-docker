@@ -2,6 +2,8 @@
 
 ##### CONSTANTS
 
+VERSION=1.2
+
 RESTORE='\033[0m'
 
 RED='\033[00;31m'
@@ -36,10 +38,13 @@ while [ "$1" != "" ]; do
     shift
 done
 
+echo -e "${YELLOW}HV PUBLISH ${PURPLE}${VERSION}${RESTORE}"
+echo -e "${YELLOW}-----------${YELLOW}---${RESTORE}"
 
 
 COMMIT_SUBJECT=`git log -n 1 --pretty=format:%s $BITBUCKET_COMMIT`
-COMMIT_DATE=`git log -n 1 --pretty=format:%cI $BITBUCKET_COMMIT`
+COMMIT_DATE=`git log -n 1 --pretty="format:%cI" $BITBUCKET_COMMIT`
+COMMIT_AUTHOR=`git log -n 1 --pretty="format:%aN <%ae>" $BITBUCKET_COMMIT`
 
 
 
@@ -59,6 +64,11 @@ netlify-deploy --source $source_directory --name $site_name --output $output --m
 
 deploy_url=`cat $output`
 
-node -p "JSON.stringify({url:'$deploy_url', commit: '$BITBUCKET_COMMIT', branch: '$BITBUCKET_BRANCH', project: '$project', message: '${COMMIT_SUBJECT//\'/\\\'}', comitted_at: '$COMMIT_DATE'})" > body.json
-curl -s -k -H "Content-Type: application/json" -H "x-apikey: $RESTDB_API_KEY" -X POST -d @body.json 'https://hvify-ed6c.restdb.io/rest/builds'
+node -p "JSON.stringify({url:'$deploy_url', commit: '$BITBUCKET_COMMIT', branch: '$BITBUCKET_BRANCH', project: '$project', message: '${COMMIT_SUBJECT//\'/\\\'}', comitted_at: '$COMMIT_DATE', author: '$COMMIT_AUTHOR'})" > body.json
 
+echo -e "🏦  ${CYAN}Saving deploy to ${YELLOW}Firebase${RESTORE}"
+
+cat body.json
+
+# Save to HVify (firebase)
+curl -s -k -H "Content-Type: application/json" -X POST -d @body.json "https://hvify.com/api/deploy?token=$HVIFY_TOKEN"

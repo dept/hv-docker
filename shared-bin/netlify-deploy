@@ -89,7 +89,7 @@ fi
 echo '
 /*
   Cache-Control: public, max-age=31536000
-' > ./build/_headers
+' > $source_directory/_headers
 
 
 ## Create Zip
@@ -104,19 +104,19 @@ cd $source_directory; zip -rq ../$FILE .; cd $currentDirectory
 echo -e "🚀  ${CYAN}Deploying to ${YELLOW}Netlify${RESTORE}"
 
 ## Create Site
+echo -e "\n   - creating site (if already created, don't worry about the error)"
 curl -s -H "Authorization: Bearer $NETLIFY_ACCESS_TOKEN" -X POST -d "name=hv-$site_name&force_ssl=true" https://api.netlify.com/api/v1/sites
 
 ## Assign to HV Team
+echo -e "\n   - assigning to HV Team"
 curl -s -H "Authorization: Bearer $NETLIFY_ACCESS_TOKEN" -X POST -d "account_id=5a573203a6188f7ad3e2362c" https://api.netlify.com/api/v1/sites/hv-$site_name.netlify.com/transfer
 
 
 ## Upload Zip, create deploy
 
-# echo "Message:   $message"
-# echo "Converted: ${message//\'/\\\'}"
-# echo "JS:        encodeURIComponent('${message//\'/\\\'}')"
 message_url_encoded=$(node -p "encodeURIComponent('${message//\'/\\\'}')")
 
+echo -e "\n   - actually deploy zipped build"
 curl -s -H "Content-Type: application/zip" -H "Authorization: Bearer $NETLIFY_ACCESS_TOKEN" --data-binary "@$FILE" https://api.netlify.com/api/v1/sites/hv-$site_name.netlify.com/deploys?title=$message_url_encoded > /tmp/netlify_deploy.json
 
 cat /tmp/netlify_deploy.json | jq -r '.deploy_ssl_url' > $output

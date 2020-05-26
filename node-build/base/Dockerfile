@@ -1,9 +1,8 @@
-FROM node:8
+FROM node:current-alpine
 WORKDIR /usr/src/app
 RUN \
-	apt-get -y update && \
-	apt-get install -y rsync zip pngquant jq; \
+	apk --no-cache --upgrade add git rsync zip pngquant jq \
 	npm install -g git+https://git@bitbucket.org/hinderlingvolkart/hv-publish.git; \
-	hv-publish --version; \ 
+	hv-publish --version; \
 	echo "All done. Version 1.0.4"
 CMD [ "npm", "update", "-g", "git+https://git@bitbucket.org/hinderlingvolkart/hv-publish.git" ]

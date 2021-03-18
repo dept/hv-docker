@@ -11,9 +11,11 @@ RUN \
 	apt-get update -qq && apt-get install -qq --no-install-recommends \
     nodejs \
     yarn \
-	rsync zip pngquant jq \
+	pngquant \
   && apt-get clean \
-  && rm -rf /var/lib/apt/lists/*
+  && rm -rf /var/lib/apt/lists/*; \
+	npm install -g @hv/publish; \
+	hv-publish --version;
 RUN \
-	npm install -g git+https://git@bitbucket.org/hinderlingvolkart/hv-publish.git; \ 
+	npm update -g @hv/publish; \ 
 	echo "All done"

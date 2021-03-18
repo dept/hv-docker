@@ -16,6 +16,7 @@ RUN \
   && rm -rf /var/lib/apt/lists/*; \
 	npm install -g @hv/publish; \
 	hv-publish --version;
+ARG CACHE_BUSTER=0
 RUN \
 	npm update -g @hv/publish; \ 
 	echo "All done"

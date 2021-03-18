@@ -14,7 +14,7 @@ RUN \
 	pngquant \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*; \
-	npm install -g @hv/publish; \
+	npm install -g --unsafe-perm=true @hv/publish; \
 	hv-publish --version;
 ARG CACHE_BUSTER=0
 RUN \

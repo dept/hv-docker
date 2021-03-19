@@ -16,7 +16,7 @@ RUN \
   && rm -rf /var/lib/apt/lists/*; \
 	npm install -g --unsafe-perm=true @hv/publish; \
 	hv-publish --version;
-ARG CACHE_BUSTER=0
-RUN \
-	npm update -g @hv/publish; \ 
-	echo "All done"
+ENV CACHE_BUSTER v0
+RUN \ 
+	npm install -g --unsafe-perm=true @hv/publish; \
+	hv-publish --version;

@@ -13,7 +13,9 @@ RUN \
     	yarn \
 		pngquant \
   && apt-get clean \
-  && rm -rf /var/lib/apt/lists/*;
+  && rm -rf /var/lib/apt/lists/*; \
+	npm install -g --unsafe-perm=true @hv/publish; \
+	hv-publish --version;
 ENV CACHE_BUSTER v0
 RUN \ 
 	npm install -g --unsafe-perm=true @hv/publish; \

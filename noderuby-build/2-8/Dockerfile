@@ -6,7 +6,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 RUN \ 
 	apt-get update -qq \
-	&& apt-get install -qq --no-install-recommends git pngquant \
+	&& apt-get install -qq --no-install-recommends git build-essential pngquant \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*;
 ENV CACHE_BUSTER v0

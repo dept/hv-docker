@@ -29,6 +29,6 @@ RUN \
 
 ENV CACHE_BUSTER v0
 RUN \ 
-	yarn global add @hv/publish; \
-	hv-publish --version;
+	/bin/bash -l -c "yarn global add @hv/publish"; \
+	/bin/bash -l -c "hv-publish --version";
 ENTRYPOINT ["/bin/bash", "-l", "-c"]

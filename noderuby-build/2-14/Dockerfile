@@ -4,6 +4,7 @@ WORKDIR /usr/src/app
 ENV LANG C.UTF-8
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
+RUN gem install bundler -v "~>1.0"
 RUN \ 
 	curl -sL https://deb.nodesource.com/setup_14.x | bash -; \
 	curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -; \

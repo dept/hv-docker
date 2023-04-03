@@ -11,7 +11,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 RUN \
 	BUNDLER_VERSION="2.0"; \
-	if [[ $(echo "$RUBY_VERSION >= 2.6" | bc -l) -eq 1 ]]; then \
+	if [[ $(echo "$RUBY_VERSION < 2.6" | bc -l) -eq 1 ]]; then \
 	BUNDLER_VERSION="2.3.26"; \
 	fi; \
 	gem install bundler -v "~>${BUNDLER_VERSION}"

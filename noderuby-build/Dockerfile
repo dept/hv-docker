@@ -6,15 +6,12 @@ WORKDIR /usr/src/app
 ARG NODE_VERSION=14
 ARG VERSION=0
 
+ARG BUNDLER_VERSION=2.0
+
 ENV LANG C.UTF-8
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-RUN \
-	BUNDLER_VERSION="2.0"; \
-	if [[ $(echo "$RUBY_VERSION < 2.6" | bc -l) -eq 1 ]]; then \
-	BUNDLER_VERSION="2.3.26"; \
-	fi; \
-	gem install bundler -v "~>${BUNDLER_VERSION}"
+RUN gem install bundler -v "~>${BUNDLER_VERSION}"
 RUN gem install bundler -v "~>1.0"
 RUN \ 
 	curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash -; \

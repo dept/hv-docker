@@ -16,8 +16,9 @@ pipelines:
             - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD
             - for ruby_version in 2.5 2.6 2.7 3.0 2 3; do
             - for node_version in 10 12 14 16; do
-            - echo "––– RUBY $ruby_version / NODE $node_version –––"
-            - docker build --build-arg RUBY_VERSION=$ruby_version --build-arg NODE_VERSION=$node_version --build-arg VERSION=$BITBUCKET_BUILD_NUMBER -t hinderlingvolkart/noderuby-build:$ruby_version-$node_version noderuby-build/
+            - BUNDLER_VERSION="2.0"; if [[ $(echo "$RUBY_VERSION < 2.6" | bc -l) -eq 1 ]]; then BUNDLER_VERSION="2.3.26"; fi
+            - echo "––– RUBY $ruby_version / NODE $node_version / BUNDLER $BUNDLER_VERSION –––"
+            - docker build --build-arg RUBY_VERSION=$ruby_version --build-arg NODE_VERSION=$node_version --build-arg BUNDLER_VERSION=$BUNDLER_VERSION --build-arg VERSION=$BITBUCKET_BUILD_NUMBER -t hinderlingvolkart/noderuby-build:$ruby_version-$node_version noderuby-build/
             - docker push hinderlingvolkart/noderuby-build:$ruby_version-$node_version
             - done; done
 options:

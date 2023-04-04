@@ -18,7 +18,7 @@ pipelines:
             - for node_version in 12 14 16 18; do
             - |
               BUNDLER_VERSION="2.0"
-              if (( $(echo "$ruby_version < 2.6" | bc -l) )); then
+              if [[ $(awk -v r="$ruby_version" 'BEGIN { print (r < 2.6) ? "1" : "0" }') -eq 1 ]]; then
                 BUNDLER_VERSION="2.3.26"
               fi
             - echo "--- RUBY $ruby_version / NODE $node_version / BUNDLER $BUNDLER_VERSION ---"

@@ -5,7 +5,7 @@ pipelines:
           name: Node images
           script:
             - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD
-            - for node_version in 10 12 14 15 16 18 19; do
+            - for node_version in 10 12 14 15 16 18 19 20; do
             - echo "--- NODE $node_version ---"
             - docker build --build-arg NODE_VERSION=$node_version --build-arg VERSION=$BITBUCKET_BUILD_NUMBER -t hinderlingvolkart/node-build:$node_version node-build/
             - docker push hinderlingvolkart/node-build:$node_version

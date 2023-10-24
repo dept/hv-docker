@@ -14,7 +14,7 @@ pipelines:
           name: Node and Ruby images
           script:
             - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD
-            - combinations=("2.5 12" "2.6 12" "2.7 12" "2.7 14" "2.7 16" "2.7 18" "2.7 20" "2 12" "2 14" "2 16" "2 18" "2 20" "3 12" "3 14" "3 16" "3 18" "3 20" "3.2 18" "3.2 20")
+            - combinations=("3.2 20" "3.2 18" "3 20" "3 18" "3 16" "3 14" "3 12" "2 20" "2 18" "2 16" "2 14" "2 12" "2.7 20" "2.7 18" "2.7 16" "2.7 14" "2.7 12" "2.6 12" "2.5 12")
             - |
               for combo in "${combinations[@]}"; do
                 read -r ruby_version node_version <<< "$combo"

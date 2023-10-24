@@ -7,7 +7,7 @@ if [ -z "$NODE_VERSION" ]; then
 fi
 
 # Check if NODE_VERSION is >= 18
-if [ "$NODE_VERSION" -ge 18 ]; then
+if [ "$NODE_VERSION" -ge 16 ]; then
    apt-get update -qq
    apt-get install -y ca-certificates curl gnupg
    mkdir -p /etc/apt/keyrings
